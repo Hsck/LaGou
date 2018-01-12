@@ -1,4 +1,4 @@
-import json
+﻿import json
 import re
 import requests
 import time
@@ -26,17 +26,7 @@ headers = {
     'Host': 'www.lagou.com',
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/49.0.2623.221 Safari/537.36 SE 2.X MetaSr 1.0',
-    'Cookie': 'user_trace_token=20171124224144-57fa14ab-80c6-4ab3-9e0f-6325a8f90524; '
-              'LGUID=20171124224148-99c1cda0-d125-11e7-9a16-5254005c3644; TG-TRACK-CODE=search_code; '
-              'JSESSIONID=ABAAABAACBHABBIEA5FDFAA7A06DF601DE60938913D7458; PRE_UTM=; PRE_HOST=; PRE_SITE=; '
-              'PRE_LAND=https%3A%2F%2Fpassport.lagou.com%2Flogin%2Flogin.html%3Fmsg%3Dvalidation%26uStatus%3D2%26clientIp%3D113.'
-              '223.191.33; X_HTTP_TOKEN=dc55f56c7fa4472777c6a986d7c8b0b1; _putrc=8BBE0002E6D865F7; login=true; '
-              'unick=%E6%8B%89%E5%8B%BE%E7%94%A8%E6%88%B70931; hasDeliver=0; gate_login_token=28a2b87e084b24e96b0654df26c3'
-              '2de2e950014c24b602c2; ab_test_random_num=0; SEARCH_ID=35bdef288e2a4a988d594c9d846f9367; index_location_'
-              'city=%E5%85%A8%E5%9B%BD; _gid=GA1.2.2098119922.1515120014; _gat=1; Hm_lvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1514702210,'
-              '1515120014; Hm_lpvt_4233e74dff0ae5bd0a3d81c6ccf756e6=1515216954; _ga=GA1.2.51122390.1511534707; '
-              'LGSID=20180106132021-4aac2153-f2a1-11e7-a01c-5254005c3644; LGRID=20180106133055-c49883be-f2a2-11e7-bfa5-525400f775ce'
-
+    'Cookie': '请登录您的拉勾网账号后，在此填写自己的cookie信息'
 }
 
 
@@ -80,13 +70,18 @@ def parse_detail_page(detail_html):
         job_advantage = soup.select('#job_detail > dd.job-advantage')[0].get_text()
         job_location = soup.select('#job_detail > dd.job-address.clearfix > div.work_addr')[0].get_text()
         job_description = soup.select('#job_detail > dd.job_bt > div')[0].get_text()
+        job_request = soup.find('dd', {'class': 'job_request'}).p
         info = {
             '职位名': soup.select('body > div.position-head > div > div.position-content-l > div > span')[0].get_text(),
+            '薪酬': job_request.contents[1].string,
             '公司': soup.select('body > div.position-head > div > div.position-content-l > div > div.company')[0].get_text(),
-            '薪酬': soup.select('body > div.position-head > div > div.position-content-l > dd > p > span.salary')[0].get_text(),
+            '公司主页': soup.find('i', {'class': 'icon-glyph-home'}).find_next_sibling('a').string,
             '工作地点': "".join(job_location.split())[:-4],
+            '工作经验': job_request.contents[5].string[:-1],
+            '学历要求': job_request.contents[7].string[:-1],
+            '工作性质': job_request.contents[9].string[:-1],
             '职位诱惑': job_advantage.replace("\n", ""),
-            '职位描述': job_description.replace("\n", "")
+            '职位描述': "".join(job_description).split()
         }
         #save_to_file(info)
         save_to_mongo(info)
