@@ -4,6 +4,6 @@ Selenium+Chrome抓取拉勾网招聘信息，可通过在config.py文件中设�
 
 爬取效果图
 ===
-![](https://github.com/Hsck/LaGou/raw/master/picture/1.jpg)
+![](https://github.com/Hsck/IMAGE/raw/master/image/ZH_WALLPAPER2.jpg)
 <br><br/>
 ![](https://github.com/Hsck/LaGou/raw/master/picture/2.jpg)
